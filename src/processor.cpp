@@ -15,7 +15,7 @@ float Processor::Utilization() {
   }
   long prev_time_Total = 0;
 
-  for (auto& element : prev_vec) {
+  for (auto element : prev_vec) {
     prev_time_Total += std::stol(element);
   }
 
@@ -33,7 +33,7 @@ float Processor::Utilization() {
   }
   long time_Total = 0;
 
-  for (auto& element : vec) {
+  for (auto element : vec) {
     time_Total += std::stol(element);
   }
 

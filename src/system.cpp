@@ -22,7 +22,9 @@ vector<Process>& System::Processes() {
   processes_.clear();
   auto vec = LinuxParser::Pids();
 
-  for (auto& element : vec) {
+  /// HELP: using 'auto &element' would occasionally cause:
+  /// Aborted (core dumped) "double free or corruption (out)"
+  for (auto element : vec) {
     Process newProcess{element};
     processes_.push_back(newProcess);
   }
