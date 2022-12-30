@@ -25,7 +25,7 @@ string Process::Ram() {
   int ram_mb;
   // Sanity check in case Ram() is a string with random data;
   try {
-    ram_mb = std::stod(ram_kb) * 0.001;
+    ram_mb = std::stod(ram_kb) / 1024;
   } catch (...) {
     return string();
   }
@@ -34,7 +34,7 @@ string Process::Ram() {
 
 string Process::User() { return LinuxParser::User(_pid); }
 
-long int Process::UpTime() { return LinuxParser::UpTime(_pid); }
+long int Process::UpTime() { return LinuxParser::UpTime() - LinuxParser::UpTime(_pid); }
 
 bool Process::operator<(Process const& a) const {
   return a.CpuUtilization() < CpuUtilization();

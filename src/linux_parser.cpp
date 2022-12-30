@@ -1,9 +1,10 @@
+#include "linux_parser.h"
+
 #include <dirent.h>
 #include <unistd.h>
+
 #include <string>
 #include <vector>
-
-#include "linux_parser.h"
 
 using std::stof;
 using std::string;
@@ -67,7 +68,8 @@ vector<int> LinuxParser::Pids() {
 }
 
 float LinuxParser::MemoryUtilization() {
-  std::string line, title, value;
+  std::string line, title;
+  std::string value = "1";  // run time error might occur when trying to convert an empty string
   float MemTotal = -1.0;
   float MemFree = -1.0;
   std::ifstream filestream(kProcDirectory + kMeminfoFilename);
@@ -91,7 +93,8 @@ float LinuxParser::MemoryUtilization() {
 }
 
 long LinuxParser::UpTime() {
-  string line, uptime;
+  std::string line;
+  std::string uptime = "1";  // run time error might occur when trying to convert an empty string
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
@@ -120,7 +123,8 @@ vector<string> LinuxParser::CpuUtilization() {
 }
 
 int LinuxParser::TotalProcesses() {
-  string line, title, value;
+  std::string line, title;
+  std::string value = "1";  // run time error might occur when trying to convert an empty string;
   std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -135,7 +139,8 @@ int LinuxParser::TotalProcesses() {
 }
 
 int LinuxParser::RunningProcesses() {
-  string line, title, value;
+  string line, title;
+  std::string value ="1";  // run time error might occur when trying to convert an empty string
   std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -157,7 +162,6 @@ string LinuxParser::Command(int pid) {
     return line;
   }
   return string();
-
 }
 
 string LinuxParser::Ram(int pid) {
@@ -212,7 +216,8 @@ string LinuxParser::User(int pid) {
 }
 
 long LinuxParser::UpTime(int pid) {
-  std::string line, value;
+  std::string line;
+  std::string value = "1";  // run time error might occur when trying to convert an empty string
   std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
   if (filestream.is_open()) {
     int pos = 1;
@@ -238,7 +243,8 @@ long LinuxParser::UpTime(int pid) {
 }
 
 float LinuxParser::CpuUtilization(int pid) {
-  std::string line, value;
+  std::string line;
+  std::string value = "1";  // run time error might occur when trying to convert an empty string
   std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
 
   float utime = 0.0;
@@ -246,8 +252,12 @@ float LinuxParser::CpuUtilization(int pid) {
   float cutime = 0.0;
   float cstime = 0.0;
   float starttime = 0.0;
+
   auto Hertz = sysconf(_SC_CLK_TCK);
+  if (Hertz == 0) return 0;
+
   int pos = 1;
+
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
